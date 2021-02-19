@@ -13,3 +13,13 @@ Number one problems our seniors (over 80) face today is loneliness and isolation
 Lucy is a skill developed for Amazon Alexa device echo dot which sits in senior’s room.
 
 A group of student volunteers write personal emails to our seniors . Lucy reads those emails to seniors as they come or at certain time.
+
+### Approach
+
+SSML is a markup language that provides a standard way to mark up text for the generation of synthetic speech. The Alexa Skills Kit supports a subset of the tags defined in the SSML specification.
+
+https://developer.amazon.com/en-US/docs/alexa/custom-skills/speech-synthesis-markup-language-ssml-reference.html
+
+To interact with alexa, we can use - **node-red-contrib-alexa-remote2** which is a Node-RED node. Node-RED is a programming tool for wiring together hardware devices, APIs and online services in new and interesting ways.
+
+https://github.com/586837r/node-red-contrib-alexa-remote2
