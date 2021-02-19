@@ -1,8 +1,5 @@
 # Team8
 
-## Topic 
-(from ranjanr.blogspot.com)
-
 ### Problem statement
 
 Number one problems our seniors (over 80) face today is loneliness and isolation. According to the U.S. Census Bureau 11 million, or 28% of people aged 65 and older, lived alone at the time of the census. As people get older, their likelihood of living alone only increases. Additionally, more and more older adults do not have children, reports the AARP, and that means fewer family members to provide company and care as those adults become seniors.
