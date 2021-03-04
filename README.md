@@ -1,4 +1,4 @@
-# Team8
+# Lucy
 
 ### Problem statement
 
