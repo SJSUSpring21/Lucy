@@ -23,3 +23,6 @@ https://developer.amazon.com/en-US/docs/alexa/custom-skills/speech-synthesis-mar
 To interact with alexa, we can use - **node-red-contrib-alexa-remote2** which is a Node-RED node. Node-RED is a programming tool for wiring together hardware devices, APIs and online services in new and interesting ways.
 
 https://github.com/586837r/node-red-contrib-alexa-remote2
+
+![image](https://user-images.githubusercontent.com/77031080/110748862-2e60d280-81f5-11eb-8df6-c348b35547e5.png)
+
