@@ -55,7 +55,3 @@ Example :
 |  Ask < invocation name > |   Alexa, Ask Lucy Skill  |
 | Open < invocation name > |  Alexa, Open Lucy Skill  |
 |Start < invocation name > | Alexa, Start Lucy Skill  |
-
-
-
-
