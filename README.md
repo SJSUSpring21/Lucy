@@ -1,9 +1,11 @@
 # Lucy
 
+## Team Members
+
 Shivani Degloorkar, Jigar Desai, Divya Mohan, Geetika Kapil
 
 
-### Problem statement
+## Problem statement
 
 Number one problems our seniors (over 80) face today is loneliness and isolation. According to the U.S. Census Bureau 11 million, or 28% of people aged 65 and older, lived alone at the time of the census. As people get older, their likelihood of living alone only increases. Additionally, more and more older adults do not have children, reports the AARP, and that means fewer family members to provide company and care as those adults become seniors.
 1. Senior isolation increases the risk of mortality.
@@ -18,12 +20,14 @@ Lucy is a skill developed for Amazon Alexa device echo dot which sits in seniorâ
 A group of student volunteers write personal emails to our seniors . Lucy reads those emails to seniors as they come or at certain time.
 
 
-### Architecture diagram
+
+## Architecture diagram
 
 ![architecture_diagram](images/Lucy%20Architecture%20Diagram.png)
 
 
-### Features
+
+## Features
 
 1. Verifies Pin before reading any email for privacy protection.
 2. Reads out received emails.
@@ -39,17 +43,18 @@ A group of student volunteers write personal emails to our seniors . Lucy reads 
 12. Sets reminders for medicines or any other tasks.
 
 
-### How to invoke
+
+## How to invoke skill ?
 
 To start the skill, a simple invocation phrase is needed.
 Example :
 
-|     Starting Phrase    |          Example         |   
-|------------------------|--------------------------|
-|   <invocation name>    |    Alexa, Lucy Skill     |  
-|  Ask <invocation name> |   Alexa, Ask Lucy Skill  |
-| Open <invocation name> |  Alexa, Open Lucy Skill  |
-|Start <invocation name> | Alexa, Start Lucy Skill  |
+|      Starting Phrase     |          Example         |   
+|--------------------------|--------------------------|
+|   < invocation name >    |    Alexa, Lucy Skill     |  
+|  Ask < invocation name > |   Alexa, Ask Lucy Skill  |
+| Open < invocation name > |  Alexa, Open Lucy Skill  |
+|Start < invocation name > | Alexa, Start Lucy Skill  |
 
 
 
