@@ -1,5 +1,8 @@
 # Lucy
 
+Shivani Degloorkar, Jigar Desai, Divya Mohan, Geetika Kapil
+
+
 ### Problem statement
 
 Number one problems our seniors (over 80) face today is loneliness and isolation. According to the U.S. Census Bureau 11 million, or 28% of people aged 65 and older, lived alone at the time of the census. As people get older, their likelihood of living alone only increases. Additionally, more and more older adults do not have children, reports the AARP, and that means fewer family members to provide company and care as those adults become seniors.
@@ -14,15 +17,40 @@ Lucy is a skill developed for Amazon Alexa device echo dot which sits in seniorâ
 
 A group of student volunteers write personal emails to our seniors . Lucy reads those emails to seniors as they come or at certain time.
 
-### Approach
 
-SSML is a markup language that provides a standard way to mark up text for the generation of synthetic speech. The Alexa Skills Kit supports a subset of the tags defined in the SSML specification.
+### Architecture diagram
 
-https://developer.amazon.com/en-US/docs/alexa/custom-skills/speech-synthesis-markup-language-ssml-reference.html
+![architecture_diagram](images/Lucy%20Architecture%20Diagram.png)
 
-To interact with alexa, we can use - **node-red-contrib-alexa-remote2** which is a Node-RED node. Node-RED is a programming tool for wiring together hardware devices, APIs and online services in new and interesting ways.
 
-https://github.com/586837r/node-red-contrib-alexa-remote2
+### Features
 
-![image](https://user-images.githubusercontent.com/77031080/110748862-2e60d280-81f5-11eb-8df6-c348b35547e5.png)
+1. Verifies Pin before reading any email for privacy protection.
+2. Reads out received emails.
+3. Replies to an email with predefined or custom replies.
+4. Wait feature if seniors find giving commands at faster pace difficult. 
+5. Can navigate back and forth between received emails.
+6. Gives count of received emails.
+7. Confirms if email has attachments.
+8. Filters emails based on date.
+9. Filters emails based on subject.
+10. Filters emails based on sender.
+11. Marks emails as important.
+12. Sets reminders for medicines or any other tasks.
+
+
+### How to invoke
+
+To start the skill, a simple invocation phrase is needed.
+Example :
+
+|     Starting Phrase    |          Example         |   
+|------------------------|--------------------------|
+|   <invocation name>    |    Alexa, Lucy Skill     |  
+|  Ask <invocation name> |   Alexa, Ask Lucy Skill  |
+| Open <invocation name> |  Alexa, Open Lucy Skill  |
+|Start <invocation name> | Alexa, Start Lucy Skill  |
+
+
+
 

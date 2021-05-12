@@ -1,0 +1,803 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "lucy skill",
+            "intents": [
+                {
+                    "name": "CountIntent",
+                    "slots": [
+                        {
+                            "name": "readFilter",
+                            "type": "readtypes"
+                        },
+                        {
+                            "name": "fromFilter",
+                            "type": "AMAZON.US_FIRST_NAME"
+                        },
+                        {
+                            "name": "subjectFilter",
+                            "type": "subjects"
+                        },
+                        {
+                            "name": "dateFilter",
+                            "type": "AMAZON.DURATION"
+                        }
+                    ],
+                    "samples": [
+                        "how many {readFilter} emails are there with the subject {subjectFilter} ",
+                        "get my messages",
+                        "how many {readFilter} emails are there with the subject {subjectFilter}",
+                        "how many {readFilter} emails are there with the subject {subjectFilter} from {fromFilter}",
+                        "how many {readFilter} emails are there with the subject {subjectFilter} from {fromFilter} from the last {dateFilter}",
+                        "how many emails are there with the subject {subjectFilter} from {fromFilter}",
+                        "how many emails are there with the subject {subjectFilter} from {fromFilter} from the last {dateFilter}",
+                        "how many emails are there are from {fromFilter}",
+                        "how many emails are there are from {fromFilter} with the subject {subjectFilter}",
+                        "how many emails are there are from {fromFilter} with the subject {subjectFilter} from the last {dateFilter}",
+                        "how many emails are there are from the last {dateFilter}",
+                        "how many emails are there are from the last {dateFilter} with the subject {subjectFilter}",
+                        "how many emails are there are from the last {dateFilter} with the subject {subjectFilter} from {fromFilter}",
+                        "how many emails are there are from the last {dateFilter} from {fromFilter}",
+                        "how many emails are there are from the last {dateFilter} from {fromFilter} with the subject {subjectFilter}",
+                        "how many emails are there are from the last {dateFilter} from {fromFilter} with {subjectFilter} in the subject",
+                        "how many emails are there are from the last {dateFilter} from {fromFilter} with subject {subjectFilter} ",
+                        "how many emails are there are from the last {dateFilter} with {subjectFilter} in the subject",
+                        "how many emails are there are from the last {dateFilter} with {subjectFilter} in the subject from {fromFilter}",
+                        "how many emails are there are from the last {dateFilter} with subject {subjectFilter} ",
+                        "how many emails are there are from the last {dateFilter} with subject {subjectFilter}  from {fromFilter}"
+                    ]
+                },
+                {
+                    "name": "setMedicineIntent",
+                    "slots": [
+                        {
+                            "name": "timeslot",
+                            "type": "AMAZON.TIME",
+                            "samples": [
+                                "{timeslot}",
+                                "At {timeslot} o clock",
+                                "At {timeslot} p.m",
+                                "At {timeslot} a.m"
+                            ]
+                        }
+                    ],
+                    "samples": [
+                        "open medicine reminder",
+                        "medicine reminder",
+                        "set medicine reminder at {timeslot}",
+                        "set medicine reminder",
+                        "set medicine reminder at {timeslot} a.m",
+                        "set medicine reminder at {timeslot} p.m",
+                        "set medicine reminder at {timeslot} o clock "
+                    ]
+                },
+                {
+                    "name": "setYogaIntent",
+                    "slots": [
+                        {
+                            "name": "timeslot",
+                            "type": "AMAZON.TIME",
+                            "samples": [
+                                "{timeslot}",
+                                "{timeslot} p.m",
+                                "{timeslot} a.m",
+                                "At {timeslot}",
+                                "At {timeslot} p.m",
+                                "At {timeslot} a.m",
+                                "set reminder at {timeslot} p.m",
+                                "set reminder at {timeslot} a.m"
+                            ]
+                        }
+                    ],
+                    "samples": [
+                        "set yoga reminder",
+                        "set reminder for youa at {timeslot}",
+                        "set reminder for yoga"
+                    ]
+                },
+                {
+                    "name": "ReviewIntent",
+                    "slots": [
+                        {
+                            "name": "readFilter",
+                            "type": "readtypes"
+                        },
+                        {
+                            "name": "fromFilter",
+                            "type": "AMAZON.US_FIRST_NAME"
+                        },
+                        {
+                            "name": "subjectFilter",
+                            "type": "subjects"
+                        },
+                        {
+                            "name": "dateFilter",
+                            "type": "AMAZON.DURATION"
+                        }
+                    ],
+                    "samples": [
+                        "review {readFilter} my messages",
+                        "check my emails",
+                        "get my emails",
+                        "review my emails",
+                        "read my {readFilter} emails",
+                        "read my {readFilter} emails with the subject {subjectFilter}",
+                        "read my {readFilter} messages with the subject {subjectFilter} from {fromFilter}",
+                        "read my {readFilter} messages with the subject {subjectFilter} from {fromFilter} from the last {dateFilter}",
+                        "get my {readFilter} emails",
+                        "get {readFilter} messages",
+                        "get messages",
+                        "get {readFilter} messages with the subject {subjectFilter}",
+                        "get {readFilter} messages with the subject {subjectFilter} from {fromFilter}",
+                        "get {readFilter} messages with the subject {subjectFilter} from {fromFilter} from the last {dateFilter}",
+                        "{readFilter} messages from {fromFilter} received in the last {dateFilter} with the subject {subjectFilter} ",
+                        "do I have a new email with the subject {subjectFilter}",
+                        "do I have new email with the subject {subjectFilter} from {fromFilter}",
+                        "do I have new email with the subject {subjectFilter} from {fromFilter} from the last {dateFilter}",
+                        "do I have new email from {fromFilter}",
+                        "do I have new email from {fromFilter} with the subject {subjectFilter}",
+                        "do I have new email from {fromFilter} with the subject {subjectFilter} from the last {dateFilter}",
+                        "do I have new email from the last {dateFilter}",
+                        "do I have new email from the last {dateFilter} with the subject {subjectFilter}",
+                        "do I have new email from the last {dateFilter} with the subject {subjectFilter} from {fromFilter}",
+                        "do I have new email from the last {dateFilter} from {fromFilter}",
+                        "do I have new email from the last {dateFilter} from {fromFilter} with the subject {subjectFilter}",
+                        "do I have new email received in the last {dateFilter}",
+                        "do I have new email received in the last {dateFilter} with the subject {subjectFilter}",
+                        "do I have new email received in the last {dateFilter} with the subject {subjectFilter} from {fromFilter}"
+                    ]
+                },
+                {
+                    "name": "AMAZON.NextIntent",
+                    "samples": [
+                        "next message review my messages",
+                        "next message"
+                    ]
+                },
+                {
+                    "name": "AMAZON.PreviousIntent",
+                    "samples": [
+                        "go back a message",
+                        "go back one",
+                        "previous message",
+                        "go to previous email",
+                        "previous email"
+                    ]
+                },
+                {
+                    "name": "GoToMessageIntent",
+                    "slots": [
+                        {
+                            "name": "messagenumber",
+                            "type": "AMAZON.NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "go to message {messagenumber}",
+                        "go to number {messagenumber}",
+                        "go to {messagenumber}",
+                        "message {messagenumber}",
+                        "go to the {messagenumber} message"
+                    ]
+                },
+                {
+                    "name": "DetailsIntent",
+                    "slots": [],
+                    "samples": [
+                        "tell me more",
+                        "more details",
+                        "more",
+                        "details",
+                        "keep reading",
+                        "read it",
+                        "read more",
+                        "read that"
+                    ]
+                },
+                {
+                    "name": "MarkReadIntent",
+                    "slots": [],
+                    "samples": [
+                        "mark this one read",
+                        "mark as read",
+                        "I've seen this one",
+                        "I've read this before",
+                        "I've already opened this'",
+                        "I've read this one",
+                        "I read this before",
+                        "I heard this one",
+                        "I heard this before"
+                    ]
+                },
+                {
+                    "name": "MarkUnReadIntent",
+                    "slots": [],
+                    "samples": [
+                        "Keep this one as new",
+                        "keep this as new",
+                        "mark unread",
+                        "mark as unread",
+                        "mark this unread",
+                        "mark this new",
+                        "mark this one new",
+                        "mark this as new"
+                    ]
+                },
+                {
+                    "name": "StarIntent",
+                    "slots": [],
+                    "samples": [
+                        "mark this as starred",
+                        "mark this as important",
+                        "star that",
+                        "star this message",
+                        "mark important"
+                    ]
+                },
+                {
+                    "name": "UnStarIntent",
+                    "slots": [],
+                    "samples": [
+                        "unstar the message",
+                        "unstar that",
+                        "remove the star"
+                    ]
+                },
+                {
+                    "name": "DeleteIntent",
+                    "slots": [],
+                    "samples": [
+                        "delete that",
+                        "delete it",
+                        "erase that",
+                        "erase it",
+                        "delete",
+                        "erase",
+                        "delete message",
+                        "delete this message",
+                        "delete this one",
+                        "delete this",
+                        "erase message",
+                        "erase this message",
+                        "erase this one",
+                        "erase this",
+                        "trash message",
+                        "trash this message",
+                        "trash this one",
+                        "trash this",
+                        "move it to the trash",
+                        "trash it",
+                        "throw it away",
+                        "throw this away",
+                        "throw away this message"
+                    ]
+                },
+                {
+                    "name": "RefreshIntent",
+                    "slots": [],
+                    "samples": [
+                        "refresh the list",
+                        "refresh"
+                    ]
+                },
+                {
+                    "name": "ReplyIntent",
+                    "slots": [
+                        {
+                            "name": "replymessage",
+                            "type": "replies"
+                        }
+                    ],
+                    "samples": [
+                        "reply {replymessage}",
+                        "reply to this email {replymessage}",
+                        "reply to this email with message as {replymessage}",
+                        "reply to this email with an answer as {replymessage}",
+                        "reply to the sender with an answer as {replymessage}",
+                        "answer ",
+                        "answer with {replymessage}",
+                        "send an answer",
+                        "reply to everyone with message as {replymessage}"
+                    ]
+                },
+                {
+                    "name": "ReplyAllIntent",
+                    "slots": [
+                        {
+                            "name": "replymessage",
+                            "type": "replies"
+                        }
+                    ],
+                    "samples": [
+                        "reply all {replymessage}"
+                    ]
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": [
+                        "quit",
+                        "exit"
+                    ]
+                },
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.YesIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NoIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StartOverIntent",
+                    "samples": [
+                        "go to the first message",
+                        "go to the top"
+                    ]
+                },
+                {
+                    "name": "AMAZON.RepeatIntent",
+                    "samples": []
+                },
+                {
+                    "name": "HelpWithSlotIntent",
+                    "slots": [
+                        {
+                            "name": "helptopic",
+                            "type": "helptopics"
+                        }
+                    ],
+                    "samples": [
+                        "how do I {helptopic}",
+                        "what happens if I {helptopic}",
+                        "what happens when I {helptopic}",
+                        "if I {helptopic} what will happen",
+                        "if I {helptopic} what happens",
+                        "if I say {helptopic} what will you do",
+                        "what happens if I say {helptopic}",
+                        "what happens when I say {helptopic}",
+                        "if I say {helptopic} what will happen",
+                        "if I say {helptopic} what happens"
+                    ]
+                },
+                {
+                    "name": "SayPINIntent",
+                    "slots": [
+                        {
+                            "name": "mypin",
+                            "type": "AMAZON.FOUR_DIGIT_NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "it's {mypin}",
+                        "{mypin}"
+                    ]
+                },
+                {
+                    "name": "SetPINIntent",
+                    "slots": [
+                        {
+                            "name": "mypin",
+                            "type": "AMAZON.FOUR_DIGIT_NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "set my pin",
+                        "set my pin to {mypin}"
+                    ]
+                },
+                {
+                    "name": "ListAttachmentsIntent",
+                    "slots": [],
+                    "samples": [
+                        "does this email has attachments",
+                        "are there any attachments",
+                        "attachments"
+                    ]
+                },
+                {
+                    "name": "ClearPINIntent",
+                    "slots": [],
+                    "samples": [
+                        "erase my PIN",
+                        "remove my PIN",
+                        "clear my PIN"
+                    ]
+                },
+                {
+                    "name": "AdvancedModeOnIntent",
+                    "slots": [],
+                    "samples": [
+                        "turn on advanced mode",
+                        "in advanced mode"
+                    ]
+                },
+                {
+                    "name": "AdvancedModeOffIntent",
+                    "slots": [],
+                    "samples": [
+                        "don't talk so much",
+                        "turn off advanced mode"
+                    ]
+                },
+                {
+                    "name": "WaitIntent",
+                    "slots": [],
+                    "samples": [
+                        "wait",
+                        "allow me some time",
+                        "wait a second",
+                        "please hold",
+                        "please wait",
+                        "give me some time"
+                    ]
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                }
+            ],
+            "types": [
+                {
+                    "name": "readtypes",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "read"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "unread"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "new"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "old"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "all"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "total"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "starred"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "important"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "subjects",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "dinner"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "meeting"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "party"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "bill"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "payment"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "sale"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "wireless"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "date"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "call"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "credit"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "lunch"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "coffee"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "shopping"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "kids"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "pictures"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "photos"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "vacation"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "trip"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "flight"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "hotel"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "replies",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "I got your message."
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "I'll be there."
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "I can't make it."
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "I'll call you about this."
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Thanks for the photos."
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Thanks for your note."
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "That's great news."
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "I'm sorry to hear that.  Is there anything i can do?"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Congratulations!"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Can we choose anoher day?"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Can we meet at a different time?"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Thank you."
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Would you please call me about this?"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "helptopics",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "check my email"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "delete"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "delete a message"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "erase "
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "erase a message"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "go to the next message"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "move around messages"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "move to other messages"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "go back"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "check a diferent account"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "get all my messages"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "get just my new messages"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "dialog": {
+            "intents": [
+                {
+                    "name": "setMedicineIntent",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "timeslot",
+                            "type": "AMAZON.TIME",
+                            "confirmationRequired": true,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "confirmation": "Confirm.Slot.1012306432853.482096702170",
+                                "elicitation": "Elicit.Slot.396465719629.1035267654671"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "setYogaIntent",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "timeslot",
+                            "type": "AMAZON.TIME",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.1071319198125.1610296531051"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "delegationStrategy": "ALWAYS"
+        },
+        "prompts": [
+            {
+                "id": "Elicit.Slot.396465719629.1035267654671",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "At what time do you wanna set the daily reminder?"
+                    }
+                ]
+            },
+            {
+                "id": "Confirm.Slot.1012306432853.482096702170",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "medicine reminder at {timeslot} . Did I get it right?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.1071319198125.1610296531051",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "At what time do you wanna set the daily reminder?"
+                    }
+                ]
+            }
+        ]
+    }
+}
