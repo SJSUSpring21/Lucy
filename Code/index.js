@@ -19,7 +19,7 @@ MyGmail.prototype.eventHandlers.onSessionStarted = function (sessionStartedReque
     //erase google drive files from old sessions (any images from "show me").
     var myToken=session.user.accessToken;
     var postData = "{'function':'deleteFiles','parameters':['"+myToken+"']}";
-    runScripts (postData, session, function scriptCallback(err,scriptResponse){
+    runScripts (postData, session, function scriptCallback(){
     });
 };    
 
@@ -50,8 +50,8 @@ MyGmail.prototype.eventHandlers.onLaunch = function (launchRequest, session, res
 	checkpin (intent,session, response);}
 };
 
-MyGmail.prototype.eventHandlers.onSessionEnded = function (SessionEndedRequest, session) {
-
+MyGmail.prototype.eventHandlers.onSessionEnded = function () {
+	response('')
 };
 
 //CONNECT INTENTS TO THE FUNCTIONS THAT WILL HANDLE THEM
@@ -136,14 +136,6 @@ MyGmail.prototype.intentHandlers = {
         checkpin(intent,session,response);
     },
     "ClearPINIntent": function (intent, session, response) {
-        checkpin(intent,session,response);
-    },
-    "AdvancedModeOnIntent": function (intent, session, response) {
-	    session.attributes.advanced=true;
-        checkpin(intent,session,response);
-    },
-    "AdvancedModeOffIntent": function (intent, session, response) {
-		session.attributes.advanced=false;
         checkpin(intent,session,response);
     },
     "WaitIntent":function (intent, session, response) {
@@ -655,7 +647,7 @@ function getSummary (intent, session, response) {
     		}
         }
 		    var postData = "{'function':'modifyMsg','parameters':['"+messageID+"','MarkReadIntent']}";
-            runScripts (postData, session, function scriptCallback(err,scriptResponse){});
+            runScripts (postData, session, function scriptCallback(){});
       		session.attributes.messageIndex=myIndex;
       		session.attributes.attachments="";
   	    	session.attributes.currentMessage={"id":messageID,"from":from,"date":date,"subject":subject};
@@ -790,7 +782,6 @@ function listAttachments(intent, session, response){
 		    makeResponse(session,response,7);
 	    } else {
 	        var messageID=session.attributes.currentMessage.id;
-    	    var mytoken = session.user.accessToken;
     	    var postData = "{'function':'getAttachments','parameters':['"+messageID+"']}";
     	    runScripts (postData, session, function scriptCallback(err,scriptResponse){
 	            if (err) {
@@ -914,9 +905,9 @@ function helpTheUser(intent, session, response){
 	    speechOutput={speech:speechText,type:'SSML'};
 	    break;
 	default:  //user opened the skill with a request for help.
-		speechOutput = "The my email skill lets you read, and manage your Google g mail using Alexa.  I sent a card to the Alexa app with a link to online instructions.  You can also say help while using the skill, for more specific coaching. To get started with your unread messages, you can say check my email, or you can say quit to exit. What would you like to do?";
-	    cardContent="For more information and instructions for the My Email skill, use a browser to go to\r\n http://email-skill.blogspot.com";
-	    cardTitle="Link to the My Email Skill Web Site";
+		speechOutput = "The Lucy skill lets you read, and manage your Google g mail using Alexa.  I sent a card to the Alexa app with a link to online instructions.  You can also say help while using the skill, for more specific coaching. To get started with your unread messages, you can say check my email, or you can say quit to exit. What would you like to do?";
+	    cardContent="To connect your account, go to 'Skills and Games";
+	    cardTitle="Link to the Luck Skill";
 		if(session.attributes.messageList){session.attributes.helpContext=6;} 
 		else {session.attributes.helpContext=4;}
 	}
@@ -924,7 +915,6 @@ function helpTheUser(intent, session, response){
 	if(cardTitle){response.askWithCard(speechOutput, repromptOutput,cardTitle, cardContent);}
 	else {response.ask(speechOutput,repromptOutput);}
 }
-
 
 function deleteConfirm(intent,session,response){
     var messageID;
@@ -945,7 +935,7 @@ function questionYesHandler(intent, session, response){
         case 1: //would you like to review? (found messages)
             getSummary(intent,session,response);
             break;
-	case 2: //confirm reply or reply all.  Send?
+		case 2: //confirm reply or reply all.  Send?
 	        session.attributes.helpContext=6;
             replyMessage(intent,session,response);
             break;
@@ -1052,7 +1042,7 @@ function runScripts (postData, session,scriptCallback){
     		return scriptCallback(null,responseString);
         });
     });
-    req.on('error', function (e) {
+    req.on('error', function () {
         return scriptCallback(new Error("Non 200 Response"),null);
         });
     // write data to request body
@@ -1204,49 +1194,6 @@ function checkpin(intent,session, response){
                         case 'GoToMessageIntent':
                             getSummary(intent,session,response);
                             break;
-                        case 'AdvancedModeOnIntent': //this will result in Alexa announcing advanced mode and going on to default behavior
-            		        session.attributes.advanced=true;
-		                    intent={
-                                "name": "ReviewIntent",
-                                "slots": {
-                                    "fromFilter": {
-                                        "name": "fromFilter"
-                                    },
-                                    "subjectFilter": {
-                                      "name": "subjectFilter"
-                                    },
-                                    "readFilter": {
-                                        "name": "readFilter",
-                                         "value": "new"
-                                    },
-                                    "dateFilter": {
-                                        "name": "dateFilter"
-                                    }
-                                }
-	                        };
-                            getSummary(intent,session,response);
-                            break;
-                        case 'AdvancedModeOffIntent': //will result in Alexa usual introduction and default behavior
-		                    intent={
-                                "name": "ReviewIntent",
-                                "slots": {
-                                    "fromFilter": {
-                                        "name": "fromFilter"
-                                    },
-                                    "subjectFilter": {
-                                      "name": "subjectFilter"
-                                    },
-                                    "readFilter": {
-                                        "name": "readFilter",
-                                         "value": "new"
-                                    },
-                                    "dateFilter": {
-                                        "name": "dateFilter"
-                                    }
-                                }
-	                        };
-                            getSummary(intent,session,response);
-                            break; 
                         case 'DetailsIntent':
                             messageDetails(intent, session, response);
                             break;
@@ -1275,10 +1222,6 @@ function checkpin(intent,session, response){
                         case 'ListAttachmentsIntent':
                             listAttachments(intent, session, response);
                             break;
-
-                        case 'ShowMeIntent':
-             	            showmeHandler(intent, session, response);
- 	                        break;
                         case 'WaitIntent':
                             makeResponse(session,response,54);
                             break;
@@ -1355,12 +1298,6 @@ function checkpin(intent,session, response){
             case 'ClearPINIntent':
                 setpin(intent,session,response);
                 break;
-            case 'AdvancedModeOnIntent':
-		        makeResponse(session,response,46);
-                  break;
-            case 'AdvancedModeOffIntent':
-			    makeResponse(session,response,47);
-		        break;
 	        case 'SayPINIntent':
 		        makeResponse(session,response,48);
                 break;
@@ -1392,10 +1329,6 @@ function checkpin(intent,session, response){
             case 'ListAttachmentsIntent':
                 listAttachments(intent, session, response);
                 break;
-
-            case 'ShowMeIntent':
- 	            showmeHandler(intent, session, response);
- 	            break;
             case 'WaitIntent':
                 makeResponse(session,response,54);
                 break;
@@ -1518,49 +1451,6 @@ function setpin(intent,session,response){
                         case 'GoToMessageIntent':
                             getSummary(intent,session,response);
                             break;
-                        case 'AdvancedModeOnIntent': //this will result in Alexaa announcing advanced mode and going on to default behavior
-            		        session.attributes.advanced=true;
-		                    intent={
-                                "name": "ReviewIntent",
-                                "slots": {
-                                    "fromFilter": {
-                                        "name": "fromFilter"
-                                    },
-                                    "subjectFilter": {
-                                      "name": "subjectFilter"
-                                    },
-                                    "readFilter": {
-                                        "name": "readFilter",
-                                         "value": "new"
-                                    },
-                                    "dateFilter": {
-                                        "name": "dateFilter"
-                                    }
-                                }
-	                        };
-                            getSummary(intent,session,response);
-                            break;
-                        case 'AdvancedModeOffIntent': //will result in Alexa usual introduction and default behavior
-		                    intent={
-                                "name": "ReviewIntent",
-                                "slots": {
-                                    "fromFilter": {
-                                        "name": "fromFilter"
-                                    },
-                                    "subjectFilter": {
-                                      "name": "subjectFilter"
-                                    },
-                                    "readFilter": {
-                                        "name": "readFilter",
-                                         "value": "new"
-                                    },
-                                    "dateFilter": {
-                                        "name": "dateFilter"
-                                    }
-                                }
-	                        };
-                            getSummary(intent,session,response);
-                            break; 
                         case 'DetailsIntent':
                             messageDetails(intent, session, response);
                             break;
@@ -1589,10 +1479,6 @@ function setpin(intent,session,response){
                         case 'ListAttachmentsIntent':
                             listAttachments(intent, session, response);
                             break;
-
-                        case 'ShowMeIntent':
-             	            showmeHandler(intent, session, response);
- 	                        break;
                         case 'WaitIntent':
                             makeResponse(session,response,54);
                             break;
@@ -1635,638 +1521,311 @@ function makeResponse(session,response,context,param1,param2){
 	var speechText="";
 	session.attributes.question="";
 	var speechOutput,repromptText,repromptOutput,cardTitle,cardText,tmpSpeech;
-	var speakindex,msg,i, attachments,imageurl,readFilter;
-    if(session.attributes.advanced){ //speech for advanced mode
-	    if(!session.attributes.started){
-		    speechText="You opened this skill in advanced mode.  If you change your mind and want more coaching, just say turn advanced mode off. ";
-		    session.attributes.started=true;
-	    }	
-	    	    switch(context){
-		case 1:
-			speechOutput="I am having trouble interpreting your search request. Please try again.";
-			if(!session.attributes.messageList){
-			repromptText="<speak><p>You can say things like check my email, help, or say quit to exit.</p>  What would you like to do?</speak>";
-			} else {
-			repromptText="<speak><p>You can try a different search, say next message to go back to what you were doing, say help, or say quit to exit.</p>  What would you like to do?</speak>";
-			}
-			repromptOutput={speech:repromptText,type:'SSML'};
-			break;
-		case 2:
-			speechOutput="Please open the Alexa app to reconnect your google account, and then try this skill again. Goodbye.";
-			response.tellWithLinkAccount(speechOutput);
-			break;
-		case 3:
-			speechOutput="I'm having trouble reaching Google to process your request.";
-			repromptOutput="You can say things like check my email, help or say wait, for more time.  What would you like to do?";
-			break;
-		case 4:
-			session.attributes.question=1;
-			if(session.attributes.tmpmessageList.resultSizeEstimate==1){
-				speechOutput=speechText+"I found one"+session.attributes.tmpreadFilter+" message"+session.attributes.tmpsearchString+". would you like to review it?";
-				repromptOutput="You can say yes to start at the first message I just found, or say no to go back to the previous list.  Would you like to review the message I found?";
-			} else {
-				speechOutput=speechText+"I found "+session.attributes.tmpmessageList.resultSizeEstimate+" "+session.attributes.tmpreadFilter+" messages"+session.attributes.tmpsearchString+". would you like to review them?";
-				repromptOutput="You can say yes to start at the first message I just found, or say no to go back to the previous list.  Would you like to review the messages I found?";
-			}
-			break;
-		case 5:
-			speechText="<speak><p>"+speechText+"</p>I didn't find any" + param1 + " messages"+param2+".</speak>";
-			speechOutput={speech:speechText,type:'SSML'};
-			repromptOutput="You can try another search, or say things like review all my messages, help, or say wait, for more time.  What would you like to do?";
-			break;
-		case 6:
-		    if(session.attributes.readFilter==' total'&&session.attributes.searchString){readFilter='';}
-		    else{readFilter=session.attributes.readFilter;}
-			if(session.attributes.messageList.resultSizeEstimate==1){
-				speechText="<speak><p>"+speechText+"</p><p>You have one"+readFilter+" message"+session.attributes.searchString+".</p></speak>";
-			} else {
-				speechText="<speak><p>"+speechText+"</p><p>You have "+session.attributes.messageList.resultSizeEstimate+" "+readFilter+" messages"+session.attributes.searchString+".</p></speak>";
-			}
-			speechOutput={speech:speechText,type:'SSML'};
-			repromptOutput="You can say say things like next message, help, or say wait, for more time.  What would you like to do?";
-			break;
-		case 7:
-			speechText="<speak><p>"+speechText+"</p><p>I think you asked me to do something with a message, but first I need to get a list of your messages.</p><p> You can say things like check my email, review all my messages, or help.</p>  What would you like to do?</speak>";
-			speechOutput={speech:speechText,type:'SSML'};
-			repromptOutput="You can say things like check my email.";
-			break;
-		case 8:
-		    if(session.attributes.readFilter==' total'&&session.attributes.searchString){readFilter='';}
-		    else{readFilter=session.attributes.readFilter;}
-		    if(session.attributes.messageList.resultSizeEstimate==1){
-			speechText="<speak><p>"+speechText+"</p><p>You have one"+readFilter+" message"+session.attributes.searchString+"</p>";
-			} else {
-				speechText="<speak><p>"+speechText+"</p><p>You have "+session.attributes.messageList.resultSizeEstimate+" "+readFilter+" messages"+session.attributes.searchString+"</p>";
-			}
-			speakindex=session.attributes.messageIndex+1;
-			msg=session.attributes.currentMessage;
-		    speechText = speechText+"<p>  Message: " + speakindex + ". From "+msg.from+". Received: "+msg.date+". Subject: "+msg.subject+".</p></speak>";
-		    speechOutput={speech:speechText,type:'SSML'};
-		    repromptText="<speak><p>You can say help for more choices, say wait, for more time, or say quit to exit.</p>  What would you like to do?</speak>";
-		    repromptOutput={speech:repromptText,type:'SSML'};
-            break;
-        case 9:
-            speakindex=session.attributes.messageIndex+1;
-		msg=session.attributes.currentMessage;
-		    speechText = "<speak><p>Message: " + speakindex + ". From: "+msg.from+". Received: "+msg.date+". Subject: "+msg.subject+".</p></speak>";
-		    repromptText="<speak><p>You can say help for more choices, say wait for more time, or say quit to exit.</p>  What would you like to do?</speak>";
-		    speechOutput={speech:speechText,type:'SSML'};
-		    repromptOutput={speech:repromptText,type:'SSML'};
-            break;
-	    case 10:
-	        switch(param1){
-            case 'reachedend':
-                speechOutput="You have reached the last message on this list.";
-		   	    break;
-	   	    case 'reachedfirst':
-        	    speechOutput="You have reached the first message on this list.";
-			    break;
-		    case 'outofbounds':
-			    speechOutput="I think you were trying to go to a specific message, but I can't find the one you are looking for.  Please say go to message, and then a number between 1 and "+session.attributes.messageList.resultSizeEstimate+", or ask me to do something else.";
-	        }
-	        repromptOutput={speech:"<speak><p>You can say things like get all my messages, help or say quit to exit.</p> What would you like to do next?</speak>",type:'SSML'};
-	        break;
-	    case 11:
-	        speechText="<speak><p>Here's your message: </p><p>"+param1+"</p><p> That's the end of the message.</p><p>  You can say things like next message, or help.</p>What would you like to do?</speak>";
-            speechOutput={speech:speechText,type:'SSML'};
-            repromptOutput="You can say things like next message, help or say wait, for more time. What would you like to do?";
-            session.attributes.lastSpeech=param1+"  That's the end of the message.  You can say things like next message, or help. What would you like to do?";
-            response.ask(speechOutput,repromptOutput);
-            break;
-        case 12:
-            switch(param1){
-                case "MarkReadIntent": 
-                    speechOutput="OK.  I marked that message as read.";
-                    break;
-                case "MarkUnReadIntent":
-                    speechOutput="OK.  I marked that message as unread.";
-                    break;
-                case "StarIntent":
-                    speechOutput="OK.  I marked that message as starred.";
-                    break;
-                case "UnStarIntent":
-                    speechOutput="OK.  I removed the star from that message.";
-                break;        
-                case "AMAZON.YesIntent":
-                speechOutput="OK.  I moved that message to your trash folder.";
-            }
-            repromptOutput="You can say things like next message, help, or say wait, for more time. What would you like to do?";
-            break;
-        case 13:
-            speechText="<speak><p>If you are trying to reply, say reply, to answer only the sender, or reply all, to answer everyone on this message, followed by a short, 1 sentence message.</p><p>You can say something like, reply all, I'll see you then.</p> What would you like to do next?</speak>";
-            speechOutput={speech:speechText,type:'SSML'};
-            repromptOutput="You can try again to reply, or say things like next message, help, or say wait, for more time. What would you like to do?";
-            break;
-        case 14:
-	    session.attributes.question=2;
-            if(session.attributes.lastIntent.name=='ReplyIntent'){
-                speechOutput="I think you asked me to reply to "+session.attributes.currentMessage.from+", saying, "+param1+". Would you like me to send this?";
-            } else {
-                speechOutput="I think you asked me to reply to everyone copied on this message, saying, "+param1+". Would you like me to send this?";
-            }
-            repromptOutput="You can say yes to send this message, say no to cancel or correct it, or say help.  Should I send the meessage?";
-            break;
-        case 15:
-            speechOutput="OK.  I sent your message.";
-            repromptOutput="You can say things like next message, help, or say wait, for more time. What would you like to do?";
-            break;
-
-
-
-	case 26: //some attachments were returned.  Read if one, ask if more.
-		attachments = session.attributes.attachments;
-		if(attachments.length>1){
-				speechOutput = "This message has "+attachments.length+" attachments.  Would you like me to list them?";
-            			session.attributes.question=6;
-            			session.attributes.helpContext=14;
-				repromptOutput="You can say yes to hear the attachments, say help, or say wait, for more time. Should I list the attachments?";
-				    }
-		if(attachments.length==1){
-			 speechOutput = "This message has one attachment.  It is "+attachments[0][0]+" named "+attachments[0][1]+".";
-            		  speechOutput =speechOutput +"  You can say things like next message, or say help for more options. What would you like to do?";
-			repromptOutput="You can say things like repeat that, help, or say wait, for more time. What woud you like to do?";
-			}
-		
+	var speakindex,msg,i, attachments,readFilter;
+	if(!session.attributes.started){
+		speechText="Welcome to the Lucy skill.  ";1
+		session.attributes.started=true;
+	}	
+			switch(context){
+	case 1:
+		speechOutput="I am having trouble interpreting your search request. Please try again.";
+		if(!session.attributes.messageList){
+		repromptText="<speak><p>You can say things like check my email, help, or say quit to exit.</p>  What would you like to do?</speak>";
+		} else {
+		repromptText="<speak><p>You can try a different search, say next message to go back to what you were doing, say help, or say quit to exit.</p>  What would you like to do?</speak>";
+		}
+		repromptOutput={speech:repromptText,type:'SSML'};
 		break;
-	case 27: //user said yes to hear the attachment list
-		    speechOutput="Here are the attachments.  To interrupt me, you can say Alexa, followed by a command.";
-		    for (i=1;i<=session.attributes.attachments.length;++i){
-            		speechOutput=speechOutput+"Attachment "+i+" is "+session.attributes.attachments[i-1][0]+" named "+session.attributes.attachments[i-1][1]+". ";
-		    }
-		    repromptOutput="You can say things like repeat that, help, or say wait, for more time. What would you like to do?";
-		    break;
-	case 28: //cancel handler
-		    session.attributes.question=4;
-		    if(session.attributes.messageList){session.attributes.helpContext=2;}
-		    else {session.attributes.helpContext=1;}
-		    speechOutput="Would you like to quit?";
-		    repromptOutput="You can say yes to quit, say no to continue, say help, or say wait, for more time.  Would you like to quit?";
-		    break;
-	case 29: //repeatHandler    		
-    		if(session.attributes.lastSpeech){speechOutput=session.attributes.lastSpeech;}
-		    else {speechOutput="I'm sorry.  I don't have any speech available to repeat.";}
-		    repromptOutput="You can say help, say quit to exit, or say wait, for more time. What would you like to do?";
-		    break;
-	case 30: //delete confirm
-		    speechOutput="Did you ask me to erase this message?";
-		    repromptOutput="You can say yes to erase this message, say no, or say help for more information.  Do you want to erase this message?";
-            session.attributes.question=5;
-        	break;
-	case 31: //reserved;
-		    break;
-	case 32: //user said yes to "set a pin?"
-		    speechOutput="To set an access pin, say set my pin, followed by a 4 digit number.  For example, you can say set my pin to 1 2 3 4.  What would you like to do?";
-		    repromptOutput="If you don't want to decide on a PIN now, I will ask you again next time. You can say things like check my email, help, or say wait, for more time.  What would you like to do?";
-		    break;
-	case 33: //said no the question - list attachments?
-	    session.attributes.helpContext=6;
-		speechOutput="OK.";
-		repromptOutput="You can say things like next message, help or say wait, for more time.  What would you like to do?";
+	case 2:
+		speechOutput="Please open the Alexa app to reconnect your google account, and then try this skill again. Goodbye.";
+		response.tellWithLinkAccount(speechOutput);
 		break;
-	case 34: //no question asked.
-	    if(session.attributes.messageList){session.attributes.helpContext=6;}
-		else {session.attributes.helpContext=4;}
-		speechOutput = "Sorry, I don't think I asked a yes or no question.";
-		if(session.attributes.messageList){
-			repromptOutput="You can say things like next message, read more, help or say quit if you're finished.  What would you like to do?";}
-		else {repromptOutput="You can say things check my email, help or say quit if you're finished.  What would you like to do?";}
-		break;
-	case 35: //said no to prompted action (delete, reply, trash)
-	    session.attributes.helpContext=6;
-		speechOutput="OK. I cancelled that.";
-		repromptOutput="You can say things like next message, help or say wait, for more time.  What would you like to do?";
-		break;
-	case 36: //reserved
-		break;
-	case 37: //user said show me attachment on a message with no attachments.
-	    speechOutput="This message has no attachments.";
-	    repromptOutput="You can say things like next message, help, or say wait, for more time.  What would you like to do?";
-    	break;
-	case 38: //User said show me but atatchments are not JPG or PNG images
-	    if(session.attributes.attachments.length==1){
-	        speechOutput="This message has one attachment, but it is not an image that I can send to the Alexa app.";
-	    } else {
-		speechOutput="This message has "+session.attributes.attachments.length+" attachments, but none of them are images that I can send to the Alexa app.";}
-		repromptOutput="You can say things like next message, help, or say wait, for more time.  What would you like to do?";
-		break;
-	case 39: //user said show me an attachment that was not an image but some others are
-	    speechOutput="This message has "+session.attributes.attachments.length+" attachments. ";
-	    if(param1.length==1){speechOutput=speechOutput+" I can only show you Attachment "+param1[0];}
-	    else {
-	        speechOutput=speechOutput+" I can show you ";
-	        for (i=0;i<param1.length-1;++i){
-	            speechOutput=speechOutput+"attachment "+param1[i]+", ";
-	        }
-	        i=param1.length-1;
-	        speechOutput=speechOutput+" or attachment "+param1[i];
-	    }
-	    repromptOutput="You can say things like show me attachment "+param1[0]+" , next message, help, or say wait, for more time.  What would you like to do?";
-	    break;
-    case 40: //OK sent image to app
-            speechOutput="OK.  I sent that to the Alexa app.";
-            repromptOutput="You can say things like next message, help, or say wait, for more time.  What would you like to do?";
-			 cardTitle="Image Attached to your message from "+session.attributes.currentMessage.from;
-			 cardText="File name: "+session.attributes.attachments[param1][1];
-			 response.askWithImageCard (speechOutput, repromptOutput, cardTitle, cardText,param2);
-		    break;
-    case 41: //OK sent last speech to app
-            speechOutput="OK.  I sent that to the Alexa app.";
-            repromptOutput="You can say things like next message, help, or say wait, for more time.  What would you like to do?";
-			cardTitle="Last Thing Said by the My Email Skill:";
-			cardText="";
-			tmpSpeech=session.attributes.lastSpeech;
-			if(typeof tmpSpeech=='object'){
-			    cardText=tmpSpeech.speech.replace(/<[^>]*>/g, "");
-			} else {cardText=tmpSpeech;}
-			response.askWithCard (speechOutput, repromptOutput, cardTitle, cardText);
-			break;
-	case 42: //user said "my PIN is..without a number or one not 4 digits
-		speechOutput=speechText+"I think you were trying to speak an access PIN but I didn't understand the number.  Please say your four-digit number.  If you were not trying to say a PIN, try your request again.  What would you like to do?";
-		repromptOutput="You can say your PIN, say help, say quit to exit, or say wait, for more time.  What is your four-digit PIN?";
-		break;
-	case 43: //user with a PIN set, opened skill without saying their PIN.
-		speechOutput=speechText+"First, what's your four-digit access PIN?";
-		repromptOutput="You can say your PIN, say help, say quit to exit, or say wait, for more time.  What is your four-digit PIN?";
-		break;
-	case 44: //user spoke incorrect PIN
-		speechOutput = {speech:"<speak><p>"+speechText+"</p>Sorry. <say-as interpret-as=\"digits\">"+param1+"</say-as> is not the correct access PIN.  Please say your PIN again.</speak>",type: 'SSML'};
-		repromptOutput="You can say your PIN, say help, say quit to exit, or say wait, for more time.  What is your four-digit PIN?";
-		break;
-	case 45: //user has no PIN, first use only prompts asking about setting one.
-	    session.attributes.question=7;
-		speechOutput=speechText+"If you would like to prevent others from reading your email using this Alexa device, you can set a 4 digit access pin.  You would need to remember this pin to access your email with Alexa.  Would you like to set a PIN now?";
-		repromptOutput="If you say yes, I'll help you set a PIN.  If you say no, I won't ask again, but you can set a PIN any time by saying set my PIN.  Do you want to set a PIN now?";
-		break;
-	case 46: //user turned on advanced mode
-		if(speechText){speechOutput=speechText;}
-		else {speechOutput="Advanced mode is on.  If you change your mind, just say turn off advanced mode.  What's next?";}	
-		repromptOutput="You can say things like review my messages, turn advanced mode off, help, or say wait, for more time.  What would you like to do?"; 
-		break;
-	case 47: //user turned off advanced mode
-		if(speechText){speechOutput=speechText;}
-		else {speechOutput="Advanced mode is off.  If you change your mind, just say turn on advanced mode.  What's next?";}	
-		repromptOutput="You can say things like review my messages, turn advanced mode on, help, or say wait, for more time.  What would you like to do?"; 
-		break;
-	case 48: //user said a PIN when it was already accepted
-		speechOutput="I think you were trying to speak your access PIN, but the PIN had already been accepted.";
-		repromptOutput="You can say things like review my messages, help, or say wait, for more time.  What would you like to do?"; 
-		break;
-	case 50: //user tried to set PIN but slot was empty or not 4 digits
-	    if(session.attributes.messageList){session.attributes.helpContext=6;}
-	    else {session.attributes.helpContext=4;}
-		speechOutput=speechText+"I think you were trying to reset your access PIN but I didn't understand the new number.";
-		repromptOutput="You can say things like review my messages,say help, for more options, or say wait, for more time.  What would you like to do?"; 
-		break;
-	case 51: //confirm successful PIN set
-	    if(session.attributes.messageList){session.attributes.helpContext=6;}
-	    else {session.attributes.helpContext=4;}
-		speechText="<speak><p>OK.</p><p>I reset your access PIN to <say-as interpret-as=\"digits\">"+param1+"</say-as></p><p> You will need this new number to access this skill in the future.</p></speak>";
+	case 3:
+		speechText="<speak><p>"+speechText+"</p><p>I'm having trouble reaching Google to process your request.</p>You can try again, say help, or say quit if you're finished. What would you like to do?</speak>";
 		speechOutput={speech:speechText,type:'SSML'};
-		repromptOutput="You can say things like review my messages, help, or say wait, for more time.  What would you like to do?"; 
+		repromptOutput="You can say things like check my email, help or say wait, for more time.  What would you like to do?";
 		break;
-	case 52: //OK PIN cleared.
-	    if(session.attributes.messageList){session.attributes.helpContext=6;}
-	    else {session.attributes.helpContext=4;}
-	    speechOutput="OK. Anyone using this Alexa device can now access the email skill without a PIN.";
-	    repromptOutput="You can say things like review my messages, help, or say wait, for more time.  What would you like to do?"; 
-	    break;
-	case 53: //wrong PIN lockout
-	    speechText="<speak><p>I'm sorry. </p><p>This account has been temporarily locked after too many incorrect PIN attempts.</p>I sent PIN reset instructions to the Alexa app.</speak>";
-	    speechOutput={speech:speechText,type:'SSML'};
-	    cardTitle="My Email Skill is Locked";
-	    cardText="To reset your PIN, use a browser to visit\r\n http://email-skill.blogspot.com/p/pin-reset.html";
-	    response.tellWithCard (speechOutput, cardTitle, cardText);
-	    break;
-	case 54:
-	    speechOutput="OK. I'll wait.";
-        repromptOutput="You can say help, say quit to exit, or say wait again, for more time.  What would you like to do?";
-	    }
-    } else { //speech for not advanced mode
-	    if(!session.attributes.started&&context!=34){
-		    speechText="Welcome to the Lucy skill.  ";
-		    session.attributes.started=true;
-	    }
-	    switch(context){
-		case 1:
-			speechText="<speak><p>"+speechText+"</p><p>I'm having trouble with your search request.  If you're searching for recent messages, I can't use a time period smaller than one day.</p><p> Please try your search again, or you can say help for more choices or say quit if you're finished.</p>  What would you like to do?</speak>";
-			if(!session.attributes.messageList){
-			repromptText="<speak><p>You can say things like check my email, help, or say quit to exit.</p>  What would you like to do?</speak>";
-			} else {
-			repromptText="<speak><p>You can try a different search, say next message to go back to what you were doing, say help, or say quit to exit.</p>  What would you like to do?</speak>";
-			}
-			speechOutput={speech:speechText,type:'SSML'};
-			repromptOutput={speech:repromptText,type:'SSML'};
-			break;
-		case 2:
-			speechOutput="Please open the Alexa app to reconnect your google account, and then try this skill again. Goodbye.";
-			
-			response.tellWithLinkAccount(speechOutput);
-			break;
-		case 3:
-			speechText="<speak><p>"+speechText+"</p><p>I'm having trouble reaching Google to process your request.</p>You can try again, say help, or say quit if you're finished. What would you like to do?</speak>";
-			speechOutput={speech:speechText,type:'SSML'};
-			repromptOutput="You can say things like check my email, help or say wait, for more time.  What would you like to do?";
-			break;
-		case 4:
-			session.attributes.question=1;
-			if(session.attributes.tmpmessageList.resultSizeEstimate==1){
-				speechOutput=speechText+"I found one"+session.attributes.tmpreadFilter+" message"+session.attributes.tmpsearchString+". would you like to review it?";
-				repromptOutput="You can say yes to start at the first message I just found, or say no to go back to the previous list.  Would you like to review the message I found?";
-			} else {
-				speechOutput=speechText+"I found "+session.attributes.tmpmessageList.resultSizeEstimate+" "+session.attributes.tmpreadFilter+" messages"+session.attributes.tmpsearchString+". would you like to review them?";
-				repromptOutput="You can say yes to start at the first message I just found, or say no to go back to the previous list.  Would you like to review the messages I found?";
-			}
-			break;
-		case 5:
-			speechText="<speak><p>"+speechText+"</p><p>I didn't find any" + param1 + " messages"+param2+".</p><p> You can say things like review all my messages, or say help for more choices.</p>  What would you like to do?</speak>";
-			speechOutput={speech:speechText,type:'SSML'};
-			repromptOutput="You can try another search, or say things like review all my messages, help, or say wait, for more time.  What would you like to do?";
-			break;
-		case 6:
-		    if(session.attributes.readFilter==' total'&&session.attributes.searchString){readFilter='';}
-		    else{readFilter=session.attributes.readFilter;}
-			if(session.attributes.messageList.resultSizeEstimate==1){
-				speechText="<speak><p>"+speechText+"</p><p>You have one"+readFilter+" message"+session.attributes.searchString+".</p>";
-			} else {
-				speechText="<speak><p>"+speechText+"</p><p>You have "+session.attributes.messageList.resultSizeEstimate+" "+readFilter+" messages"+session.attributes.searchString+".</p>";
-			}
-			speechText=speechText+"<p> You can say things like read more, next, or help.</p>  What would you like to do?</speak>";
-			speechOutput={speech:speechText,type:'SSML'};
-			repromptOutput="You can say say things like next message, help, or say wait, for more time.  What would you like to do?";
-			break;
-		case 7:
-			speechText="<speak><p>"+speechText+"</p><p>I think you asked me to do something with a message, but firsts I need to get a list of your messages.</p><p> You can say things like check my email, review all my messages, or help.</p>  What would you like to do?</speak>";
-			speechOutput={speech:speechText,type:'SSML'};
-			repromptOutput="You can say things like check my email, review all my messages, help, or say wait, for more time.  What would you like to do?";
-			break;
-		case 8:
-		    if(session.attributes.readFilter==' total'&&session.attributes.searchString){readFilter='';}
-		    else{readFilter=session.attributes.readFilter;}
-		    if(session.attributes.messageList.resultSizeEstimate==1){
-			speechText="<speak><p>"+speechText+"</p><p>You have one"+readFilter+" message"+session.attributes.searchString+"</p>";
-			} else {
-				speechText="<speak><p>"+speechText+"</p><p>You have "+session.attributes.messageList.resultSizeEstimate+" "+readFilter+" messages"+session.attributes.searchString+"</p>";
-			}
-			speakindex=session.attributes.messageIndex+1;
-			msg=session.attributes.currentMessage;
-		    speechText = speechText+"<p>  Message: " + speakindex + ". From "+msg.from+". Received: "+msg.date+". Subject: "+msg.subject+".</p>";
-		    speechText=speechText+"<p> You can say things like read more, next, erase, or say help for more options.</p>  What would you like to do?</speak>";
-		    speechOutput={speech:speechText,type:'SSML'};
-		    repromptText="<speak><p>You can say help for more choices, say wait, for more time, or say quit to exit.</p>  What would you like to do?</speak>";
-		    repromptOutput={speech:repromptText,type:'SSML'};
-            break;
-        case 9:
-            speakindex=session.attributes.messageIndex+1;
-		msg=session.attributes.currentMessage;
-		    speechText = "<speak><p>Message: " + speakindex + ". From: "+msg.from+". Received: "+msg.date+". Subject: "+msg.subject+".</p>";
-		    speechText=speechText+"<p> You can say things like read more, next, erase, or say help for more options. </p>  What would you like to do?</speak>";
-		    repromptText="<speak><p>You can say help for more choices, say wait for more time, or say quit to exit.</p>  What would you like to do?</speak>";
-		    speechOutput={speech:speechText,type:'SSML'};
-		    repromptOutput={speech:repromptText,type:'SSML'};
-            break;
-	    case 10:
-	        switch(param1){
-            case 'reachedend':
-                speechText="You have reached the last message on this list.";
-		   	    break;
-	   	    case 'reachedfirst':
-        	    speechText="You have reached the first message on this list.";
-			    break;
-		    case 'outofbounds':
-			    speechText="I think you were trying to go to a specific message, but I can't find the one you are looking for.  Please say go to message, and then a number between 1 and "+session.attributes.messageList.resultSizeEstimate+", or ask me to do something else.";
-		        break;
-	        }
-	        speechText="<speak><p>"+speechText+"</p><p> You can say things like get all my messages, help or say quit if you're finished.</p> What would you like to do next?</speak>";
-	        speechOutput={speech:speechText,type:'SSML'};
-	        repromptOutput={speech:"<speak><p>You can say things like get all my messages, help or say quit to exit.</p> What would you like to do next?</speak>",type:'SSML'};
-	        break;
-	    case 11:
-	        speechText="<speak><p>I'll try to read the message to you, but some messages are not designed to be read aloud.</p><p>  If it doesn't sound right, you can say show me to view it in the Alexa App.</p>Here's your message: <p>";
-	        speechText=speechText+param1+"</p><p> That's the end of the message.  You can say things like next message, or help.</p>What would you like to do?</speak>";
-            speechOutput={speech:speechText,type:'SSML'};
-            repromptOutput="You can say things like next message, help or say wait, for more time. What would you like to do?";
-            session.attributes.lastSpeech=param1+"  That's the end of the message.  You can say things like next message, or help. What would you like to do?";
-            response.ask(speechOutput,repromptOutput);
-            break;
-        case 12:
-            switch(param1){
-                case "MarkReadIntent": 
-                    speechText="OK.  I marked that message as read.";
-                    break;
-                case "MarkUnReadIntent":
-                    speechText="OK.  I marked that message as unread.";
-                    break;
-                case "StarIntent":
-                    speechText="OK.  I marked that message as starred.";
-                    break;
-                case "UnStarIntent":
-                    speechText="OK.  I removed the star from that message.";
-                break;        
-                case "AMAZON.YesIntent":
-                speechText="OK.  I moved that message to your trash folder.  To stop hearing it on your list you can say refresh.";
-            }
-            speechText="<speak><p>"+speechText+"</p><p>  You can say things like next message, or help.</p>What would you like to do?</speak>";
-            speechOutput={speech:speechText,type:'SSML'};
-            repromptOutput="You can say things like next message, help, or say wait, for more time. What would you like to do?";
-            break;
-        case 13:
-            speechText="<speak><p>If you are trying to reply, say reply, to answer only the sender, or reply all, to answer everyone on this message, followed by a short, 1 sentence message.</p><p>You can say something like, reply all, I'll see you then.</p> What would you like to do next?</speak>";
-            speechOutput={speech:speechText,type:'SSML'};
-            repromptOutput="You can try again to reply, or say things like next message, help, or say wait, for more time. What would you like to do?";
-            break;
-        case 14:
-	    session.attributes.question=2;
-            if(session.attributes.lastIntent.name=='ReplyIntent'){
-                speechOutput="I think you asked me to reply to "+session.attributes.currentMessage.from+", saying, "+param1+". Would you like me to send this?";
-            } else {
-                speechOutput="I think you asked me to reply to everyone copied on this message, saying, "+param1+". Would you like me to send this?";
-            }
-            repromptOutput="You can say yes to send this message, say no to cancel or correct it, or say help.  Should I send the meessage?";
-            break;
-        case 15:
-            speechOutput="OK.  I sent your message.  You can say things like next message, erase this, or help. What would you like to do?";
-            repromptOutput="You can say things like next message, help, or say wait, for more time. What would you like to do?";
-            break;
-
-	case 26: //some attachments were returned.  Read if one, ask if more.
-		attachments = session.attributes.attachments;
-		if(attachments.length>1){
-				speechOutput = "This message has "+attachments.length+" attachments.  Would you like me to list them?";
-            			session.attributes.question=6;
-            			session.attributes.helpContext=14;
-				repromptOutput="You can say yes to hear the attachments, say help, or say wait, for more time. Should I list the attachments?";
-				    }
-		if(attachments.length==1){
-			 speechOutput = "This message has one attachment.  It is "+attachments[0][0]+" named "+attachments[0][1]+".";
-            		  speechOutput =speechOutput +"  You can say things like next message, or say help for more options. What would you like to do?";
-			repromptOutput="You can say things like repeat that, help, or say wait, for more time. What woud you like to do?";
-			}
-		
+	case 4:
+		session.attributes.question=1;
+		if(session.attributes.tmpmessageList.resultSizeEstimate==1){
+			speechOutput=speechText+"I found one"+session.attributes.tmpreadFilter+" message"+session.attributes.tmpsearchString+". would you like to review it?";
+			repromptOutput="You can say yes to start at the first message I just found, or say no to go back to the previous list.  Would you like to review the message I found?";
+		} else {
+			speechOutput=speechText+"I found "+session.attributes.tmpmessageList.resultSizeEstimate+" "+session.attributes.tmpreadFilter+" messages"+session.attributes.tmpsearchString+". would you like to review them?";
+			repromptOutput="You can say yes to start at the first message I just found, or say no to go back to the previous list.  Would you like to review the messages I found?";
+		}
 		break;
-	case 27: //user said yes to hear the attachment list
-		    speechOutput="Here are the attachments.  To interrupt me, you can say Alexa, followed by a command.";
-		    for (i=1;i<=session.attributes.attachments.length;++i){
-            		speechOutput=speechOutput+"Attachment "+i+" is "+session.attributes.attachments[i-1][0]+" named "+session.attributes.attachments[i-1][1]+". ";
-		    }
-        	speechOutput=speechOutput+" You can say things like next message, or say help for more options. What would you like to do?";
-		    repromptOutput="You can say things like repeat that, help, or say wait, for more time. What would you like to do?";
-		    break;
-	case 28: //cancel handler
-		    session.attributes.question=4;
-		    if(session.attributes.messageList){session.attributes.helpContext=2;}
-		    else {session.attributes.helpContext=1;}
-		    speechOutput="Would you like to quit?";
-		    repromptOutput="You can say yes to quit, say no to continue, say help, or say wait, for more time.  Would you like to quit?";
-		    break;
-	case 29: //repeatHandler    		
-    		if(session.attributes.lastSpeech){speechOutput=session.attributes.lastSpeech;}
-		    else {speechOutput="I'm sorry.  I don't have any speech available to repeat. You can say things like review my messages, help, or quit. What would you like to do?";}
-		    repromptOutput="You can say help, say quit to exit, or say wait, for more time. What would you like to do?";
-		    break;
-	case 30: //delete confirm
-		    speechOutput="Did you ask me to move this message to the trash folder?";
-		    repromptOutput="You can say yes to erase this message, say no, or say help for more information.  Do you want to erase this message?";
-            session.attributes.question=5;
-        	break;
-	case 31: //reserved;
-		    break;
-	case 32: //user said yes to "set a pin?"
-		    speechOutput="To set an access pin, say set my pin, followed by a 4 digit number.  For example, you can say set my pin to 1 2 3 4.  What would you like to do?";
-		    repromptOutput="If you don't want to decide on a PIN now, I will ask you again next time. You can say things like check my email, help, or say wait, for more time.  What would you like to do?";
-		    break;
-	case 33: //said no the question - list attachments?
-	    session.attributes.helpContext=6;
-		speechOutput="OK. You can say things like next message or say help for more options.  What would you like to do next?";
-		repromptOutput="You can say things like next message, help or say wait, for more time.  What would you like to do?";
-		break;
-	case 34: //no question asked.
-	    if(session.attributes.messageList){session.attributes.helpContext=6;}
-		else {session.attributes.helpContext=4;}
-		speechOutput = "Sorry, I don't think I asked a yes or no question. What would you like to do?";
-		if(session.attributes.messageList){
-			repromptOutput="You can say things like next message, read more, help or say quit if you're finished.  What would you like to do?";}
-		else {repromptOutput="You can say things check my email, help or say quit if you're finished.  What would you like to do?";}
-		break;
-	case 35: //said no to prompted action (delete, reply, trash)
-	    session.attributes.helpContext=6;
-		speechOutput="OK. I canceled that.  You can say things like next message or say help for more options.  What would you like to do next?";
-		repromptOutput="You can say things like next message, help or say wait, for more time.  What would you like to do?";
-		break;
-	case 36: //reserved
-		break;
-	case 37: //user said show me attachment on a message with no attachments.
-	    speechOutput="This message has no attachments.  You can say things like next message or say help for more options.  What would you like to do?";
-	    repromptOutput="You can say things like next message, help, or say wait, for more time.  What would you like to do?";
-    	break;
-	case 38: //User said show me but atatchments are not JPG or PNG images
-	    if(session.attributes.attachments.length==1){
-	        speechOutput="This message has one attachment, but it is not an image that I can send to the Alexa app. You can say things like next message, or help. What would you like to do?";
-	    } else {
-		    speechOutput="This message has "+session.attributes.attachments.length+" attachments, but none of them are images that I can send to the Alexa app. You can say things like list the attachments, next message, or help. What would you like to do?";}
-		repromptOutput="You can say things like next message, help, or say wait, for more time.  What would you like to do?";
-		break;
-	case 39: //user said show me an attachment that was not an image but some others are
-	    speechOutput="This message has "+session.attributes.attachments.length+" attachments. ";
-	    if(param1.length==1){speechOutput=speechOutput+" I can only show you Attachment "+param1[0];}
-	    else {
-	        speechOutput=speechOutput+" I can show you ";
-	        for (i=0;i<param1.length-1;++i){
-	            speechOutput=speechOutput+"attachment "+param1[i]+", ";
-	        }
-	        i=param1.length-1;
-	        speechOutput=speechOutput+" or attachment "+param1[i];
-	    }
-	    speechOutput=speechOutput+". You can say things like show me attachment "+param1[0]+", next message, or help.  What would you like to do?";
-	    repromptOutput="You can say things like show me attachment "+param1[0]+", next message, help, or say wait, for more time.  What would you like to do?";
-	   break;
-    case 40: //OK sent image to app
-            speechOutput="OK.  I sent that to the Alexa app.  Very large files may not appear.  You can say things like next message or help.  What would you like to do next?";
-            repromptOutput="You can say things like next message, help, or say wait, for more time.  What would you like to do?";
-			 cardTitle="Image Attached to your message from "+session.attributes.currentMessage.from;
-			 cardText="File name: "+session.attributes.attachments[param1][1];
-			 imageurl=param2;
-			 response.askWithImageCard (speechOutput, repromptOutput, cardTitle, cardText,imageurl);
-		    break;
-    case 41: //OK sent last speech to app
-            speechOutput="OK.  I sent that to the Alexa app.  You can say things like next message or help.  What would you like to do next?";
-            repromptOutput="You can say things like next message, help, or say wait, for more time.  What would you like to do?";
-			cardTitle="Last Thing Said by the My Email Skill:";
-			cardText="";
-			tmpSpeech=session.attributes.lastSpeech;
-			if(typeof tmpSpeech=='object'){
-			    cardText=tmpSpeech.speech.replace(/<[^>]*>/g, "");
-			} else {cardText=tmpSpeech;}
-			response.askWithCard (speechOutput, repromptOutput, cardTitle, cardText);
-			break;
-	case 42: //user said "my PIN is..without a number or one not 4 digits
-		speechOutput=speechText+"I think you were trying to speak an access PIN but I didn't understand the number.  Please say your four-digit number.  If you were not trying to say a PIN, try your request again.  What would you like to do?";
-		repromptOutput="You can say your PIN, say help, say quit to exit, or say wait, for more time.  What is your four-digit PIN?";
-		break;
-	case 43: //user with a PIN set, opened skill without saying their PIN.
-		speechOutput=speechText+"First, what's your four-digit access PIN?";
-		repromptOutput="You can say your PIN, say help, say quit to exit, or say wait, for more time.  What is your four-digit PIN?";
-		break;
-	case 44: //user spoke incorrect PIN
-		speechOutput = {speech:"<speak><p>"+speechText+"</p>Sorry. <say-as interpret-as=\"digits\">"+param1+"</say-as> is not the correct access PIN.  Please say your PIN again, or you can say help, or say quit to exit.  What is your access PIN?</speak>",type: 'SSML'};
-		repromptOutput="You can say your PIN, say help, say quit to exit, or say wait, for more time.  What is your four-digit PIN?";
-		break;
-	case 45: //user has no PIN, first use only prompts asking about setting one.
-	    session.attributes.question=7;
-		speechOutput=speechText+"If you would like to prevent others from reading your email using this Alexa device, you can set a 4 digit access pin.  You would need to remember this pin to access your email with Alexa.  Would you like to set a PIN now?";
-		repromptOutput="If you say yes, I'll help you set a PIN.  If you say no, I won't ask again, but you can set a PIN any time by saying set my PIN.  Do you want to set a PIN now?";
-		break;
-	case 46: //user turned on advanced mode
-		if(speechText){speechOutput=speechText;}
-		else {speechOutput="Advanced mode is on.  If you change your mind, just say turn off advanced mode.  What's next?";}	
-		repromptOutput="You can say things like review my messages, turn advanced mode off, help, or say wait, for more time.  What would you like to do?"; 
-		break;
-	case 47: //user turned off advanced mode
-		if(speechText){speechOutput=speechText;}
-		else {speechOutput="Advanced mode is off.  If you change your mind, just say turn on advanced mode.  What's next?";}	
-		repromptOutput="You can say things like review my messages, turn advanced mode on, help, or say wait, for more time.  What would you like to do?"; 
-		break;
-	case 48: //user said a PIN when it was already accepted
-		speechOutput="I think you were trying to speak your access PIN, but the PIN had already been accepted.  If you were trying to change your PIN, say set my PIN, followed by the new number.  Otherwise, please try your request again.  What would you like to do?";
-		repromptOutput="You can say things like review my messages, help, or say wait, for more time.  What would you like to do?"; 
-		break;
-	case 50: //user tried to set PIN but slot was empty or not 4 digits
-	    if(session.attributes.messageList){session.attributes.helpContext=6;}
-	    else {session.attributes.helpContext=4;}
-		speechOutput=speechText+"I think you were trying to reset your access PIN but I didn't understand the new number.  To reset your PIN, you can say set my pin to, followed by a 4-digit number, or say clear my PIN, to remove it.  If you were not trying to set your PIN, try your request again, or say help for more options.  What would you like to do?";
-		repromptOutput="You can say things like review my messages,say help, for more options, or say wait, for more time.  What would you like to do?"; 
-		break;
-	case 51: //confirm successful PIN set
-	    if(session.attributes.messageList){session.attributes.helpContext=6;}
-	    else {session.attributes.helpContext=4;}
-		speechText="<speak><p>OK.</p><p>I reset your access PIN to <say-as interpret-as=\"digits\">"+param1+"</say-as></p><p> You will need this new number to access this skill in the future.</p><p> You can say things like review my messages, or say help, for more options.</p> What would you like to do?</speak>";
+	case 5:
+		speechText="<speak><p>"+speechText+"</p>I didn't find any" + param1 + " messages"+param2+".</p><p> You can say things like review all my messages, or say help for more choices.</p>  What would you like to do?</speak>";
 		speechOutput={speech:speechText,type:'SSML'};
-		repromptOutput="You can say things like review my messages, help, or say wait, for more time.  What would you like to do?"; 
+		repromptOutput="You can try another search, or say things like review all my messages, help, or say wait, for more time.  What would you like to do?";
 		break;
-	case 52: //OK PIN cleared.
-	    if(session.attributes.messageList){session.attributes.helpContext=6;}
-	    else {session.attributes.helpContext=4;}
-	    speechOutput="OK. Anyone using this Alexa device can now access the email skill without a PIN. You can say things like review my messages, or help. What would you like to do?";
-	    repromptOutput="You can say things like review my messages, help, or say wait, for more time.  What would you like to do?"; 
-	    break;
-	case 53: //wrong PIN lockout
-	    speechText="<speak><p>I'm sorry. </p><p>This account has been temporarily locked after too many incorrect PIN attempts.</p>I sent PIN reset instructions to the Alexa app.</speak>";
-	    speechOutput={speech:speechText,type:'SSML'};
-	    cardTitle="My Email Skill is Locked";
-	    cardText="To reset your PIN, use a browser to visit\r\n http://email-skill.blogspot.com/p/pin-reset.html";
-	    response.tellWithCard (speechOutput, cardTitle, cardText);
-	    break;
-	case 54:
-	    speechOutput="OK. I'll wait.";
-        repromptOutput="You can say help, say quit to exit, or say wait again, for more time.  What would you like to do?";
-    }
-    }
-    session.attributes.lastSpeech=speechOutput;
-    response.ask(speechOutput,repromptOutput);
+	case 6:
+		if(session.attributes.readFilter==' total'&&session.attributes.searchString){readFilter='';}
+		else{readFilter=session.attributes.readFilter;}
+		if(session.attributes.messageList.resultSizeEstimate==1){
+			speechText="<speak><p>"+speechText+"</p><p>You have one"+readFilter+" message"+session.attributes.searchString+".</p></speak>";
+		} else {
+			speechText="<speak><p>"+speechText+"</p><p>You have "+session.attributes.messageList.resultSizeEstimate+" "+readFilter+" messages"+session.attributes.searchString+".</p></speak>";
+		}
+		speechOutput={speech:speechText,type:'SSML'};
+		repromptOutput="You can say say things like next message, help, or say wait, for more time.  What would you like to do?";
+		break;
+	case 7:
+		speechText="<speak><p>"+speechText+"</p><p>I think you asked me to do something with a message, but first I need to get a list of your messages.</p><p> You can say things like check my email, review all my messages, or help.</p>  What would you like to do?</speak>";
+		speechOutput={speech:speechText,type:'SSML'};
+		repromptOutput="You can say things like check my email.";
+		break;
+	case 8:
+		if(session.attributes.readFilter==' total'&&session.attributes.searchString){readFilter='';}
+		else{readFilter=session.attributes.readFilter;}
+		if(session.attributes.messageList.resultSizeEstimate==1){
+		speechText="<speak><p>"+speechText+"</p><p>You have one"+readFilter+" message"+session.attributes.searchString+"</p>";
+		} else {
+			speechText="<speak><p>"+speechText+"</p><p>You have "+session.attributes.messageList.resultSizeEstimate+" "+readFilter+" messages"+session.attributes.searchString+"</p>";
+		}
+		speakindex=session.attributes.messageIndex+1;
+		msg=session.attributes.currentMessage;
+		speechText = speechText+"<p>  Message: " + speakindex + ". From "+msg.from+". Received: "+msg.date+". Subject: "+msg.subject+".</p>";
+		speechText=speechText+"<p> You can say things like read more, next, erase, or say help for more options.</p>  What would you like to do?</speak>";
+		speechOutput={speech:speechText,type:'SSML'};
+		repromptText="<speak><p>You can say help for more choices, say wait, for more time, or say quit to exit.</p>  What would you like to do?</speak>";
+		repromptOutput={speech:repromptText,type:'SSML'};
+		break;
+	case 9:
+		speakindex=session.attributes.messageIndex+1;
+	msg=session.attributes.currentMessage;
+		speechText = "<speak><p>Message: " + speakindex + ". From: "+msg.from+". Received: "+msg.date+". Subject: "+msg.subject+".</p>";
+		speechText=speechText+"<p> You can say things like read more, next, erase, or say help for more options.</p>  What would you like to do?</speak>";
+		repromptText="<speak><p>You can say help for more choices, say wait for more time, or say quit to exit.</p>  What would you like to do?</speak>";
+		speechOutput={speech:speechText,type:'SSML'};
+		repromptOutput={speech:repromptText,type:'SSML'};
+		break;
+	case 10:
+		switch(param1){
+		case 'reachedend':
+			speechOutput="You have reached the last message on this list.";
+			break;
+		case 'reachedfirst':
+			speechOutput="You have reached the first message on this list.";
+			break;
+		case 'outofbounds':
+			speechOutput="I think you were trying to go to a specific message, but I can't find the one you are looking for.  Please say go to message, and then a number between 1 and "+session.attributes.messageList.resultSizeEstimate+", or ask me to do something else.";
+		}
+		repromptOutput={speech:"<speak><p>You can say things like get all my messages, help or say quit to exit.</p> What would you like to do next?</speak>",type:'SSML'};
+		break;
+	case 11:
+		speechText="<speak><p>Here's your message: </p><p>"+param1+"</p><p> That's the end of the message.</p><p>  You can say things like next message, or help.</p>What would you like to do?</speak>";
+		speechOutput={speech:speechText,type:'SSML'};
+		repromptOutput="You can say things like next message, help or say wait, for more time. What would you like to do?";
+		session.attributes.lastSpeech=param1+"  That's the end of the message.  You can say things like next message, or help. What would you like to do?";
+		response.ask(speechOutput,repromptOutput);
+		break;
+	case 12:
+		switch(param1){
+			case "MarkReadIntent": 
+				speechOutput="OK.  I marked that message as read.";
+				break;
+			case "MarkUnReadIntent":
+				speechOutput="OK.  I marked that message as unread.";
+				break;
+			case "StarIntent":
+				speechOutput="OK.  I marked that message as starred.";
+				break;
+			case "UnStarIntent":
+				speechOutput="OK.  I removed the star from that message.";
+			break;        
+			case "AMAZON.YesIntent":
+			speechOutput="OK.  I moved that message to your trash folder. To stop hearing it on your list you can say refresh.";
+		}
+		repromptOutput="You can say things like next message, help, or say wait, for more time. What would you like to do?";
+		break;
+	case 13:
+		speechText="<speak><p>If you are trying to reply, say reply, to answer only the sender, or reply all, to answer everyone on this message, followed by a short, 1 sentence message.</p><p>You can say something like, reply all, I'll see you then.</p> What would you like to do next?</speak>";
+		speechOutput={speech:speechText,type:'SSML'};
+		repromptOutput="You can try again to reply, or say things like next message, help, or say wait, for more time. What would you like to do?";
+		break;
+	case 14:
+	session.attributes.question=2;
+		if(session.attributes.lastIntent.name=='ReplyIntent'){
+			speechOutput="I think you asked me to reply to "+session.attributes.currentMessage.from+", saying, "+param1+". Would you like me to send this?";
+		} else {
+			speechOutput="I think you asked me to reply to everyone copied on this message, saying, "+param1+". Would you like me to send this?";
+		}
+		repromptOutput="You can say yes to send this message, say no to cancel or correct it, or say help.  Should I send the meessage?";
+		break;
+	case 15:
+		speechOutput="OK.  I sent your message.";
+		repromptOutput="You can say things like next message, help, or say wait, for more time. What would you like to do?";
+		break;
+
+
+
+case 26: //some attachments were returned.  Read if one, ask if more.
+	attachments = session.attributes.attachments;
+	if(attachments.length>1){
+			speechOutput = "This message has "+attachments.length+" attachments.  Would you like me to list them?";
+					session.attributes.question=6;
+					session.attributes.helpContext=14;
+			repromptOutput="You can say yes to hear the attachments, say help, or say wait, for more time. Should I list the attachments?";
+				}
+	if(attachments.length==1){
+			speechOutput = "This message has one attachment.  It is "+attachments[0][0]+" named "+attachments[0][1]+".";
+					speechOutput =speechOutput +"  You can say things like next message, or say help for more options. What would you like to do?";
+		repromptOutput="You can say things like repeat that, help, or say wait, for more time. What woud you like to do?";
+		}
+	
+	break;
+case 27: //user said yes to hear the attachment list
+		speechOutput="Here are the attachments.  To interrupt me, you can say Alexa, followed by a command.";
+		for (i=1;i<=session.attributes.attachments.length;++i){
+				speechOutput=speechOutput+"Attachment "+i+" is "+session.attributes.attachments[i-1][0]+" named "+session.attributes.attachments[i-1][1]+". ";
+		}
+		repromptOutput="You can say things like repeat that, help, or say wait, for more time. What would you like to do?";
+		break;
+case 28: //cancel handler
+		session.attributes.question=4;
+		if(session.attributes.messageList){session.attributes.helpContext=2;}
+		else {session.attributes.helpContext=1;}
+		speechOutput="Would you like to quit?";
+		repromptOutput="You can say yes to quit, say no to continue, say help, or say wait, for more time.  Would you like to quit?";
+		break;
+case 29: //repeatHandler    		
+		if(session.attributes.lastSpeech){speechOutput=session.attributes.lastSpeech;}
+		else {speechOutput="I'm sorry.  I don't have any speech available to repeat.";}
+		repromptOutput="You can say help, say quit to exit, or say wait, for more time. What would you like to do?";
+		break;
+case 30: //delete confirm
+		speechOutput="Did you ask me to erase this message?";
+		repromptOutput="You can say yes to erase this message, say no, or say help for more information.  Do you want to erase this message?";
+		session.attributes.question=5;
+		break;
+case 31: //reserved;
+		break;
+case 32: //user said yes to "set a pin?"
+		speechOutput="To set an access pin, say set my pin, followed by a 4 digit number.  For example, you can say set my pin to 1 2 3 4.  What would you like to do?";
+		repromptOutput="If you don't want to decide on a PIN now, I will ask you again next time. You can say things like check my email, help, or say wait, for more time.  What would you like to do?";
+		break;
+case 33: //said no the question - list attachments?
+	session.attributes.helpContext=6;
+	speechOutput="OK.";
+	repromptOutput="You can say things like next message, help or say wait, for more time.  What would you like to do?";
+	break;
+case 34: //no question asked.
+	if(session.attributes.messageList){session.attributes.helpContext=6;}
+	else {session.attributes.helpContext=4;}
+	speechOutput = "Sorry, I don't think I asked a yes or no question.";
+	if(session.attributes.messageList){
+		repromptOutput="You can say things like next message, read more, help or say quit if you're finished.  What would you like to do?";}
+	else {repromptOutput="You can say things check my email, help or say quit if you're finished.  What would you like to do?";}
+	break;
+case 35: //said no to prompted action (delete, reply, trash)
+	session.attributes.helpContext=6;
+	speechOutput="OK. I cancelled that.";
+	repromptOutput="You can say things like next message, help or say wait, for more time.  What would you like to do?";
+	break;
+case 36: //reserved
+	break;
+case 37: //user said show me attachment on a message with no attachments.
+	speechOutput="This message has no attachments.";
+	repromptOutput="You can say things like next message, help, or say wait, for more time.  What would you like to do?";
+	break;
+case 38: //User said show me but atatchments are not JPG or PNG images
+	if(session.attributes.attachments.length==1){
+		speechOutput="This message has one attachment, but it is not an image that I can send to the Alexa app.";
+	} else {
+	speechOutput="This message has "+session.attributes.attachments.length+" attachments, but none of them are images that I can send to the Alexa app.";}
+	repromptOutput="You can say things like next message, help, or say wait, for more time.  What would you like to do?";
+	break;
+case 39: //user said show me an attachment that was not an image but some others are
+	speechOutput="This message has "+session.attributes.attachments.length+" attachments. ";
+	if(param1.length==1){speechOutput=speechOutput+" I can only show you Attachment "+param1[0];}
+	else {
+		speechOutput=speechOutput+" I can show you ";
+		for (i=0;i<param1.length-1;++i){
+			speechOutput=speechOutput+"attachment "+param1[i]+", ";
+		}
+		i=param1.length-1;
+		speechOutput=speechOutput+" or attachment "+param1[i];
+	}
+	repromptOutput="You can say things like show me attachment "+param1[0]+" , next message, help, or say wait, for more time.  What would you like to do?";
+	break;
+case 40: //OK sent image to app
+		speechOutput="OK.  I sent that to the Alexa app.";
+		repromptOutput="You can say things like next message, help, or say wait, for more time.  What would you like to do?";
+			cardTitle="Image Attached to your message from "+session.attributes.currentMessage.from;
+			cardText="File name: "+session.attributes.attachments[param1][1];
+			response.askWithImageCard (speechOutput, repromptOutput, cardTitle, cardText,param2);
+		break;
+case 41: //OK sent last speech to app
+		speechOutput="OK.  I sent that to the Alexa app.";
+		repromptOutput="You can say things like next message, help, or say wait, for more time.  What would you like to do?";
+		cardTitle="Last Thing Said by the My Email Skill:";
+		cardText="";
+		tmpSpeech=session.attributes.lastSpeech;
+		if(typeof tmpSpeech=='object'){
+			cardText=tmpSpeech.speech.replace(/<[^>]*>/g, "");
+		} else {cardText=tmpSpeech;}
+		response.askWithCard (speechOutput, repromptOutput, cardTitle, cardText);
+		break;
+case 42: //user said "my PIN is..without a number or one not 4 digits
+	speechOutput=speechText+"I think you were trying to speak an access PIN but I didn't understand the number.  Please say your four-digit number.  If you were not trying to say a PIN, try your request again.  What would you like to do?";
+	repromptOutput="You can say your PIN, say help, say quit to exit, or say wait, for more time.  What is your four-digit PIN?";
+	break;
+case 43: //user with a PIN set, opened skill without saying their PIN.
+	speechOutput=speechText+"First, what's your four-digit access PIN?";
+	repromptOutput="You can say your PIN, say help, say quit to exit, or say wait, for more time.  What is your four-digit PIN?";
+	break;
+case 44: //user spoke incorrect PIN
+	speechOutput = {speech:"<speak><p>"+speechText+"</p>Sorry. <say-as interpret-as=\"digits\">"+param1+"</say-as> is not the correct access PIN.  Please say your PIN again.</speak>",type: 'SSML'};
+	repromptOutput="You can say your PIN, say help, say quit to exit, or say wait, for more time.  What is your four-digit PIN?";
+	break;
+case 45: //user has no PIN, first use only prompts asking about setting one.
+	session.attributes.question=7;
+	speechOutput=speechText+"If you would like to prevent others from reading your email using this Alexa device, you can set a 4 digit access pin.  You would need to remember this pin to access your email with Alexa.  Would you like to set a PIN now?";
+	repromptOutput="If you say yes, I'll help you set a PIN.  If you say no, I won't ask again, but you can set a PIN any time by saying set my PIN.  Do you want to set a PIN now?";
+	break;
+case 48: //user said a PIN when it was already accepted
+	speechOutput="I think you were trying to speak your access PIN, but the PIN had already been accepted.";
+	repromptOutput="You can say things like review my messages, help, or say wait, for more time.  What would you like to do?"; 
+	break;
+case 50: //user tried to set PIN but slot was empty or not 4 digits
+	if(session.attributes.messageList){session.attributes.helpContext=6;}
+	else {session.attributes.helpContext=4;}
+	speechOutput=speechText+"I think you were trying to reset your access PIN but I didn't understand the new number.";
+	repromptOutput="You can say things like review my messages,say help, for more options, or say wait, for more time.  What would you like to do?"; 
+	break;
+case 51: //confirm successful PIN set
+	if(session.attributes.messageList){session.attributes.helpContext=6;}
+	else {session.attributes.helpContext=4;}
+	speechText="<speak><p>OK.</p><p>I reset your access PIN to <say-as interpret-as=\"digits\">"+param1+"</say-as></p><p> You will need this new number to access this skill in the future.</p></speak>";
+	speechOutput={speech:speechText,type:'SSML'};
+	repromptOutput="You can say things like review my messages, help, or say wait, for more time.  What would you like to do?"; 
+	break;
+case 52: //OK PIN cleared.
+	if(session.attributes.messageList){session.attributes.helpContext=6;}
+	else {session.attributes.helpContext=4;}
+	speechOutput="OK. Anyone using this Alexa device can now access the email skill without a PIN.";
+	repromptOutput="You can say things like review my messages, help, or say wait, for more time.  What would you like to do?"; 
+	break;
+case 53: //wrong PIN lockout
+	speechText="<speak><p>I'm sorry. </p><p>This account has been temporarily locked after too many incorrect PIN attempts.</p>I sent PIN reset instructions to the Alexa app.</speak>";
+	speechOutput={speech:speechText,type:'SSML'};
+	cardTitle="My Email Skill is Locked";
+	cardText="To reset your PIN, use a browser to visit\r\n http://email-skill.blogspot.com/p/pin-reset.html";
+	response.tellWithCard (speechOutput, cardTitle, cardText);
+	break;
+case 54:
+	speechOutput="OK. I'll wait.";
+	repromptOutput="You can say help, say quit to exit, or say wait again, for more time.  What would you like to do?";
+	}
+
+
+session.attributes.lastSpeech=speechOutput;
+response.ask(speechOutput,repromptOutput);
 }
-
 // Create the handler that responds to the Alexa Request.
 exports.handler = function(event, context) {
     var myGmail = new MyGmail();
     myGmail.execute(event, context);
 };
-   
