@@ -55,3 +55,7 @@ Example :
 |  Ask < invocation name > |   Alexa, Ask Lucy Skill  |
 | Open < invocation name > |  Alexa, Open Lucy Skill  |
 |Start < invocation name > | Alexa, Start Lucy Skill  |
+
+
+## Working Demo for the Lucy skill using an Alexa device.
+https://drive.google.com/file/d/1PGuLLyUvrA3-0xM4I3X39sEkiULzbMM1/view?usp=drivesdk
